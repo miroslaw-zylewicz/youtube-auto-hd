@@ -5,14 +5,14 @@ FPS
 Available for:
 
  - [Google Chrome](https://chromewebstore.google.com/detail/fcphghnknhkimeagdglkljinmpbagone) 120+ ![Chrome Web Store](https://img.shields.io/chrome-web-store/users/fcphghnknhkimeagdglkljinmpbagone?color=white&label=users&style=flat-square)
-- [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/youtube-auto-hd-fps)
+- [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/avi6106%40gmail.com/)
   117+ ![Mozilla Add-on](https://img.shields.io/amo/users/youtube-auto-hd-fps?color=white&label=users&style=flat-square)
 - [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/ggnepcoiimddpmjaoejhdfppjbcnfaom) 120+ ![users count](https://img.shields.io/badge/dynamic/json?label=users&query=activeInstallCount&style=flat-square&color=white&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/ggnepcoiimddpmjaoejhdfppjbcnfaom)
-- [Opera](https://addons.opera.com/en/extensions/details/youtube-auto-hd-fps) 120+
-- [Safari](https://apps.apple.com/us/app/id1546729687) - maintained
-  by [carlosjeurissen](https://github.com/carlosjeurissen)
+- [Opera](https://addons.opera.com/extensions/details/app_id/afgnmkmomgakegdfoldjonhgkohhodol) 120+
+- [Safari](https://apps.apple.com/app/auto-hd-fps-for-youtube/id1546729687) - maintained
+  by [Jeurissen Apps](https://apps.jeurissen.co/auto-hd-fps-for-youtube)
 - [Naver Whale](https://store.whale.naver.com/detail/njejcbikjebbmiggdpdggelmoifodjhh) - maintained
-  by [carlosjeurissen](https://github.com/carlosjeurissen)
+  by [Jeurissen Apps](https://apps.jeurissen.co/auto-hd-fps-for-youtube)
 
 <details>
 <summary>Screenshots</summary>
@@ -47,7 +47,7 @@ To provide a smooth user experience, I decided to use the last settings that wer
 
 You can translate the extension to your own language by
 filling [this form](https://apps.jeurissen.co/auto-hd-fps-for-youtube/translate)  
-Filling will grant you access to a Google Spreadsheet via email, in which you can contribute your translations
+Filling will eventually grant you access to a Google Spreadsheet via email, in which you can contribute your translations
 
 ## Requirements for setting up
 
