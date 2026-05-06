@@ -64,7 +64,7 @@ export default defineConfig({
   outDir: "build",
   outDirTemplate: "{{browser}}-mv{{manifestVersion}}-{{mode}}",
   zip: {
-    excludeSources: ["*.env", ".env*", "tests/**", "test-browsers/**", "screenshots*/**"],
+    excludeSources: ["*.env", ".env*", "tests/**", "test-browsers/**", "screenshots*/**", "user-data/**"],
     artifactTemplate: "youtube-auto-hd-fps-{{version}}-{{browser}}.zip",
     sourcesTemplate: "youtube-auto-hd-fps-{{version}}-{{browser}}-source.zip"
   },
