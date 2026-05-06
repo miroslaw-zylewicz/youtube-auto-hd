@@ -15,6 +15,11 @@
 
   const groupId = crypto.randomUUID();
 
+  const sizeOptions: Array<{ value: VideoSize; label: string }> = [
+    { value: 0, label: i18n.labelSizeSmall },
+    { value: 1, label: i18n.labelSizeLarge }
+  ];
+
   $effect(() => {
     storage.setItem("sync:autoResize", isResizeVideo.value);
   });
@@ -46,13 +51,13 @@
     <fieldset class="size">
       <legend>{i18n.labelVideoSize}</legend>
       <div class="inner">
-        {#each [{ value: 0, label: i18n.labelSizeSmall }, { value: 1, label: i18n.labelSizeLarge }] as option (option.value)}
+        {#each sizeOptions as option (option.value)}
           <label class="box" data-size={option.value === 0 ? "small" : "large"} class:selected={sizeVideo.value === option.value}>
             <input
               type="radio"
               name="video-size-{groupId}"
               bind:group={sizeVideo.value}
-              value={option.value as VideoSize} />
+              value={option.value} />
             <span class="visually-hidden">{option.label}</span>
             <div class="rectangle"></div>
           </label>

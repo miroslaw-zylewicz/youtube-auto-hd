@@ -64,7 +64,8 @@
     qualitiesMusicStored.value = qualitiesMusic;
   });
 
-  const dir = getI18n("@@bidi_dir") as "ltr" | "rtl";
+  const dirValue = getI18n("@@bidi_dir");
+  const dir: "ltr" | "rtl" = dirValue === "rtl" ? "rtl" : "ltr";
 </script>
 
 <main {dir}>
