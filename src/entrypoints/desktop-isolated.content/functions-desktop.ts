@@ -82,7 +82,7 @@ function getAvailableQualities(elVideo: HTMLVideoElement) {
     .toArray();
 }
 
-function getVideoFPS(elVideo: HTMLVideoElement) {
+export function getVideoFPS(elVideo: HTMLVideoElement) {
   const elQualities = getCurrentQualityElements(elVideo);
   for (const elQuality of elQualities) {
     if (elQuality.textContent) {

@@ -1,22 +1,18 @@
-import { prepareToChangeQualityOnDesktop } from "@/entrypoints/desktop-isolated.content/functions-desktop";
-import { fpsSupported, initial, qualities } from "@/lib/ythd-defaults";
+import { storage } from "#imports";
+import type { EnhancedBitratePreferences, QualityFpsPreferences } from "@/lib/ythd-types";
+import { getVideoFPS, prepareToChangeQualityOnDesktop } from "@/entrypoints/desktop-isolated.content/functions-desktop";
+import { initial, qualities } from "@/lib/ythd-defaults";
 import { PlayerMessage, shortsMessenger } from "@/lib/ythd-player-messaging";
 import { addStorageListeners } from "@/lib/ythd-storage-bridge";
-import type {
-  EnhancedBitratePreferences,
-  QualityFpsPreferences,
-  VideoFPS,
-  VideoQuality
-} from "@/lib/ythd-types";
 import {
   addGlobalEventListener,
   getIsExtensionEnabled,
+  getFpsFromRange,
   getPlayerDiv,
   getVisibleElement,
   OBSERVER_OPTIONS,
   SELECTORS
 } from "@/lib/ythd-utils";
-import { storage } from "#imports";
 
 
 declare global {
@@ -75,12 +71,13 @@ function saveManualQualityChangeOnDesktop({ isTrusted, target }: Event) {
     return;
   }
 
-  const fpsMatch = labelQuality.match(/[ps](\d*)/);
-  if (!fpsMatch) {
+  if (!labelQuality.match(/[ps]/)) {
     return;
   }
 
-  const fps = (fpsSupported.find(fps => fps === Number(fpsMatch[1] || 30)) ?? 30) as VideoFPS;
+  const elVideo = getVisibleElement<HTMLVideoElement>(SELECTORS.video);
+  const fpsVideo = elVideo ? getVideoFPS(elVideo) : 30;
+  const fps = getFpsFromRange(window.ythdLastUserQualities ?? initial.qualities, fpsVideo);
   const qualityClicked = qualities.find(quality => quality === parseInt(labelQuality));
   if (qualityClicked) {
     window.ythdLastQualityClicked ??= {};
