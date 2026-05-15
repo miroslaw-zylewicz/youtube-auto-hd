@@ -7,7 +7,6 @@ Available for:
  - [Google Chrome](https://chromewebstore.google.com/detail/fcphghnknhkimeagdglkljinmpbagone) 120+ ![Chrome Web Store](https://img.shields.io/chrome-web-store/users/fcphghnknhkimeagdglkljinmpbagone?color=white&label=users&style=flat-square)
 - [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/avi6106%40gmail.com/)
   117+ ![Mozilla Add-on](https://img.shields.io/amo/users/youtube-auto-hd-fps?color=white&label=users&style=flat-square)
-- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/ggnepcoiimddpmjaoejhdfppjbcnfaom) 120+ ![users count](https://img.shields.io/badge/dynamic/json?label=users&query=activeInstallCount&style=flat-square&color=white&url=https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/ggnepcoiimddpmjaoejhdfppjbcnfaom)
 - [Opera](https://addons.opera.com/extensions/details/app_id/afgnmkmomgakegdfoldjonhgkohhodol) 120+
 - [Safari](https://apps.apple.com/app/auto-hd-fps-for-youtube/id1546729687) - maintained
   by [Jeurissen Apps](https://apps.jeurissen.co/auto-hd-fps-for-youtube)
@@ -73,12 +72,6 @@ bun dev
 bun dev:rtl
 ```
 
-### Edge
-
-```shell
-bun dev:edge
-```
-
 ### Opera
 
 ```shell
@@ -107,12 +100,6 @@ bun run:firefox
 bun build
 ```
 
-### Edge
-
-```shell script
-bun build:edge
-```
-
 ### Opera
 
 ```shell
@@ -133,12 +120,6 @@ bun build:firefox
 bun package
 ```
 
-### Edge
-
-```shell
-bun package:edge
-```
-
 ### Opera
 
 ```shell
@@ -157,12 +138,6 @@ bun package:firefox
 
 ```shell
 bun build:package
-```
-
-### Edge
-
-```shell
-bun build:package:edge
 ```
 
 ### Opera

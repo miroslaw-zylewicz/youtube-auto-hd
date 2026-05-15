@@ -15,7 +15,7 @@ import {
 } from "node:path";
 import { defineWebExtConfig } from "wxt";
 
-const CHROMIUM_BROWSERS = ["chrome", "edge", "opera"] as const;
+const CHROMIUM_BROWSERS = ["chrome", "opera"] as const;
 const BROWSERS = [...CHROMIUM_BROWSERS, "firefox"] as const;
 const MODES = ["youtube", "iframe", "blank"] as const;
 
@@ -82,12 +82,6 @@ const browser = detectBrowser();
 const mode = detectMode();
 const profileName = PROFILE ?? (browser === "firefox" ? FIREFOX_PROFILE : CHROME_PROFILE);
 
-const edgeByPlatform: Partial<Record<NodeJS.Platform, string>> = {
-  win32: join(process.env.ProgramFiles ?? "", "Microsoft/Edge/Application/msedge.exe"),
-  darwin: "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-  linux: "/usr/bin/microsoft-edge-stable"
-};
-
 const operaByPlatform: Partial<Record<NodeJS.Platform, string>> = {
   win32: join(process.env.LOCALAPPDATA ?? "", "Programs/Opera/opera.exe"),
   darwin: "/Applications/Opera.app/Contents/MacOS/Opera",
@@ -99,11 +93,6 @@ const chromiumUserDataSources: Record<ChromiumBrowser, Partial<Record<NodeJS.Pla
     win32: join(process.env.LOCALAPPDATA ?? "", "Google/Chrome/User Data"),
     darwin: join(home, "Library/Application Support/Google/Chrome"),
     linux: join(home, ".config/google-chrome")
-  },
-  edge: {
-    win32: join(process.env.LOCALAPPDATA ?? "", "Microsoft/Edge/User Data"),
-    darwin: join(home, "Library/Application Support/Microsoft Edge"),
-    linux: join(home, ".config/microsoft-edge")
   },
   opera: {
     win32: join(process.env.APPDATA ?? "", "Opera Software/Opera Stable"),
@@ -260,7 +249,6 @@ const firefoxProfilePath = browser === "firefox" && profileName
 
 export default defineWebExtConfig({
   binaries: {
-    edge: edgeByPlatform[osPlatform] ?? "",
     opera: operaByPlatform[osPlatform] ?? ""
   },
   startUrls: [resolveStartUrl()],

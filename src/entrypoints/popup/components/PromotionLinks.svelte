@@ -16,7 +16,6 @@
   const linkRatingMapper = {
     chrome: "https://chromewebstore.google.com/detail/fcphghnknhkimeagdglkljinmpbagone",
     firefox: "https://addons.mozilla.org/firefox/addon/youtube-auto-hd-fps",
-    edge: "https://microsoftedge.microsoft.com/addons/detail/ggnepcoiimddpmjaoejhdfppjbcnfaom",
     opera: "https://addons.opera.com/extensions/details/app_id/afgnmkmomgakegdfoldjonhgkohhodol",
     safari: "https://apps.apple.com/app/id1546729687"
   };
@@ -34,11 +33,6 @@
     const isOpera = userAgent.includes("OPR");
     if (isOpera) {
       return "opera";
-    }
-
-    const isEdge = userAgent.includes("Edg");
-    if (isEdge) {
-      return "edge";
     }
 
     const isSafari = userAgent.match(/^((?!chrome|android).)*safari/i);
