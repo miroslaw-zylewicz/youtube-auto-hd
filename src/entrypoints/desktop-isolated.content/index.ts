@@ -43,10 +43,10 @@ async function sendQualityToMainWorld() {
 }
 
 function getQualityParentElement(elTarget: HTMLElement) {
-  if (elTarget.matches(SELECTORS.labelPremium) || elTarget.matches("sup")) {
+  if (elTarget.matches(SELECTORS.labelPremium) || elTarget.tagName === "SUP") {
     return elTarget.parentElement ?? elTarget;
   }
-  if (elTarget.matches("span")) {
+  if (elTarget.tagName === "SPAN") {
     return elTarget;
   }
   const elQualityOptionV3 = elTarget.closest<HTMLElement>(SELECTORS.qualityOption);

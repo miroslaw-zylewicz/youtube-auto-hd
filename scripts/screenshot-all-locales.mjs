@@ -92,7 +92,7 @@ async function killChrome() {
 
 function setLang(locale) {
   const pkg = JSON.parse(readFileSync(PACKAGE_JSON, "utf-8"));
-  pkg.scripts["dev:screenshot"] = `bunx cross-env BLANK=1 LANG=${locale} bun dev`;
+  pkg.scripts["dev:screenshot"] = `cross-env BLANK=1 LANG=${locale} pnpm dev`;
   writeFileSync(PACKAGE_JSON, JSON.stringify(pkg, null, 2) + "\n");
 }
 
@@ -103,9 +103,10 @@ async function takeScreenshotsForLocale(locale) {
   setLang(locale);
 
   // Start WXT dev server — keep stdin open so WXT stays alive to serve popup JS
-  const devProcess = spawn("bun", ["dev:screenshot"], {
+  const devProcess = spawn("pnpm", ["dev:screenshot"], {
     cwd: "C:/repositories/avi/youtube-auto-hd",
-    stdio: ["pipe", "ignore", "ignore"]
+    stdio: ["pipe", "ignore", "ignore"],
+    shell: true
   });
 
   try {
@@ -212,7 +213,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 const locales = process.argv.slice(2);
 if (locales.length === 0) {
-  console.error("Usage: bun scripts/screenshot-all-locales.mjs de en eo gl he ia it lb pl pt pt_BR pt_PT rm szl");
+  console.error("Usage: node scripts/screenshot-all-locales.mjs de en eo gl he ia it lb pl pt pt_BR pt_PT rm szl");
   process.exit(1);
 }
 

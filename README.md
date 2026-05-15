@@ -50,12 +50,12 @@ Filling will eventually grant you access to a Google Spreadsheet via email, in w
 
 ## Requirements for setting up
 
-Install [Node.js](https://nodejs.org) and [Bun](https://bun.sh)
+Install [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io) 11+
 
 ## Install dependencies
 
 ```shell script
-bun i
+pnpm i
 ```
 
 ## Start the dev server and run in a test browser
@@ -63,19 +63,19 @@ bun i
 ### Chrome
 
 ```shell script
-bun dev
+pnpm dev
 ```
 
 ### Chrome RTL
 
 ```shell
-bun dev:rtl
+pnpm dev:rtl
 ```
 
 ### Opera
 
 ```shell
-bun dev:opera
+pnpm dev:opera
 ```
 
 ### Firefox
@@ -83,13 +83,13 @@ bun dev:opera
 Continuously build with
 
 ```shell
-bun dev:firefox
+pnpm dev:firefox
 ```
 
 Run using [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext):
 
 ```shell
-bun run:firefox
+pnpm run:firefox
 ```
 
 ## Build
@@ -97,19 +97,19 @@ bun run:firefox
 ### Chrome
 
 ```shell script
-bun build
+pnpm build
 ```
 
 ### Opera
 
 ```shell
-bun build:opera
+pnpm build:opera
 ```
 
 ### Firefox
 
 ```shell
-bun build:firefox
+pnpm build:firefox
 ```
 
 ## Package
@@ -117,19 +117,19 @@ bun build:firefox
 ### Chrome
 
 ```shell
-bun package
+pnpm package
 ```
 
 ### Opera
 
 ```shell
-bun package:opera
+pnpm package:opera
 ```
 
 ### Firefox
 
 ```shell
-bun package:firefox
+pnpm package:firefox
 ```
 
 ## Shorthands
@@ -137,19 +137,19 @@ bun package:firefox
 ### Chrome
 
 ```shell
-bun build:package
+pnpm build:package
 ```
 
 ### Opera
 
 ```shell
-bun build:package:opera
+pnpm build:package:opera
 ```
 
 ### Firefox
 
 ```shell
-bun build:package:firefox
+pnpm build:package:firefox
 ```
 
 ## Contribution

@@ -1,4 +1,4 @@
-use bun.  
+use pnpm.  
 use early returns.  
 use DRY wherever possible while retaining maintainability and prioritizing readability.  
 don't use abbreviations in function names and variables, use full words.
