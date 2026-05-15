@@ -1,9 +1,9 @@
-node_modules
+node_modules/
 stats.html
 stats-*.json
-.wxt
+.wxt/
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -16,11 +16,11 @@ chrome.env
 firefox.env
 opera.env
 
-build
+build/
 
 # Editor directories and files
-.idea
-.vscode
+.idea/
+.vscode/
 .DS_Store
 *.suo
 *.ntvs*
@@ -30,8 +30,7 @@ build
 
 .claude/settings.local.json
 
-test-browsers
-screenshots*
+test-browsers/
+screenshots*/
 screenshot-process.js
-PatcherJSC_TURBO_MV3_250624/
-user-data
+user-data/
