@@ -21,7 +21,7 @@ export default defineConfig({
       "https://www.youtube-nocookie.com/*",
       "https://youtube.googleapis.com/*"
     ],
-    permissions: ["cookies", "storage", ...(mode === "development" ? ["management"] : [])],
+    permissions: ["cookies", "storage"],
     options_ui: {
       page: "popup.html"
     },
