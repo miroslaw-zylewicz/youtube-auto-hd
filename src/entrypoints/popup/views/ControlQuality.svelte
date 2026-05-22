@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { storage } from "#imports";
   import QualitySliderList from "../components/QualitySliderList.svelte";
   import Slider from "../components/Slider.svelte";
   import Switch from "../components/Switch.svelte";
   import { isEnhancedBitrates, isUseSuperResolution, qualitiesStored } from "@/entrypoints/popup/states.svelte";
-  import type { VideoQuality } from "@/lib/ythd-types";
   import { fpsList, qualities } from "@/lib/ythd-defaults";
+  import type { VideoQuality } from "@/lib/ythd-types";
   import { getI18n, getUncircularJson } from "@/lib/ythd-utils";
+  import { storage } from "#imports";
 
   const i18n = {
     labelSwitchSameQuality: getI18n("cj_i18n_06862", "Use the same quality for all frame rates"),
@@ -29,21 +29,22 @@
     if (!isSameQualityForAllFps || qualitiesStored.value === null) {
       return;
     }
+
     for (const fps of fpsList) {
       qualitiesStored.value[fps] = qualityForAllSelected;
     }
   });
 
   $effect(() => {
-    storage.setItem("local:qualities", getUncircularJson(qualitiesStored.value));
+    void storage.setItem("local:qualities", getUncircularJson(qualitiesStored.value));
   });
 
   $effect(() => {
-    storage.setItem("local:isEnhancedBitrates", getUncircularJson(isEnhancedBitrates.value));
+    void storage.setItem("local:isEnhancedBitrates", getUncircularJson(isEnhancedBitrates.value));
   });
 
   $effect(() => {
-    storage.setItem("local:isUseSuperResolution", isUseSuperResolution.value);
+    void storage.setItem("local:isUseSuperResolution", isUseSuperResolution.value);
   });
 </script>
 
@@ -108,7 +109,7 @@
 
 <hr />
 
-<Switch bind:checked={isUseSuperResolution.value} style="margin-block: 1.25rem;">
+<Switch style="margin-block: 1.25rem;" bind:checked={isUseSuperResolution.value}>
   {i18n.labelUseSuperResolution}
 </Switch>
 

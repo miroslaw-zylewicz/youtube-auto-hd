@@ -1,12 +1,7 @@
 import { initial } from "@/lib/ythd-defaults";
 import { embedMessenger, PlayerMessage } from "@/lib/ythd-player-messaging";
 import { addStorageListeners, loadStorageValues } from "@/lib/ythd-storage-bridge";
-import {
-  getElementByMutationObserver,
-  getIsExtensionEnabled,
-  getVisibleElement,
-  SELECTORS
-} from "@/lib/ythd-utils";
+import { getElementByMutationObserver, getIsExtensionEnabled, getVisibleElement, SELECTORS } from "@/lib/ythd-utils";
 
 function sendQualityToMainWorld() {
   void embedMessenger.sendMessage(
@@ -19,6 +14,7 @@ async function init() {
   addStorageListeners(sendQualityToMainWorld);
 
   window.ythdExtEnabled = await getIsExtensionEnabled(window.ythdExtEnabled);
+
   if (!window.ythdExtEnabled) {
     return;
   }
@@ -27,7 +23,6 @@ async function init() {
 
   const elVideo = getVisibleElement<HTMLVideoElement>(SELECTORS.video)
     ?? await getElementByMutationObserver<HTMLVideoElement>(SELECTORS.video);
-
   if (elVideo.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
     await new Promise<void>(resolve => elVideo.addEventListener("canplay", () => resolve(), { once: true }));
   }

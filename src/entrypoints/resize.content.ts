@@ -1,6 +1,5 @@
-import { storage } from "#imports";
-import type { VideoAutoResize, VideoSize } from "@/lib/ythd-types";
 import { initial } from "@/lib/ythd-defaults";
+import type { VideoAutoResize, VideoSize } from "@/lib/ythd-types";
 import {
   addGlobalEventListener,
   getIsExtensionEnabled,
@@ -8,6 +7,7 @@ import {
   OBSERVER_OPTIONS,
   SELECTORS
 } from "@/lib/ythd-utils";
+import { storage } from "#imports";
 
 interface Preferences {
   viewMode: VideoSize;
@@ -26,9 +26,11 @@ function getCurrentViewMode(): VideoSize {
   if (document.querySelector(SELECTORS.sizeToggleLarge)) {
     return 0;
   }
+
   if (document.querySelector(SELECTORS.sizeToggleSmall)) {
     return 1;
   }
+
   // Regular YouTube: use the wide cookie
   return document.cookie.match(/wide=([10])/)?.[1] === "1" ? 1 : 0;
 }
@@ -41,9 +43,7 @@ function resizePlayerIfNeeded() {
 
   const isVerticalVideo = elVideo.clientWidth <= elVideo.clientHeight;
   const shouldForceDefaultMode = preferences.isExcludeVertical && isVerticalVideo;
-  const targetViewMode = shouldForceDefaultMode ? 0 : preferences.viewMode;
-
-  if (getCurrentViewMode() !== targetViewMode) {
+  const targetViewMode = shouldForceDefaultMode ? 0 : preferences.viewMode;  if (getCurrentViewMode() !== targetViewMode) {
     getVisibleElement<HTMLButtonElement>(SELECTORS.sizeToggle)?.click();
   }
 }
@@ -51,6 +51,7 @@ function resizePlayerIfNeeded() {
 function setupVideoResizeListener(elVideo: HTMLVideoElement) {
   elVideo.removeEventListener("canplay", resizePlayerIfNeeded);
   elVideo.addEventListener("canplay", resizePlayerIfNeeded);
+
   if (elVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
     resizePlayerIfNeeded();
   }
@@ -62,7 +63,11 @@ async function getPlayerSize() {
     storage.getItem<VideoSize>("sync:size", { fallback: initial.size }),
     storage.getItem<boolean>("sync:isExcludeVertical", { fallback: initial.isExcludeVertical })
   ]);
-  return { viewMode: size, isResizeVideo, isExcludeVertical };
+  return {
+    viewMode: size,
+    isResizeVideo,
+    isExcludeVertical
+  };
 }
 
 function addTemporaryBodyListenerOnDesktop() {
@@ -70,6 +75,7 @@ function addTemporaryBodyListenerOnDesktop() {
   if (!elVideo) {
     return;
   }
+
   setupVideoResizeListener(elVideo);
 }
 
@@ -78,7 +84,11 @@ function addStorageListener() {
     if (!isEnabled) {
       return;
     }
-    preferences = { ...preferences, ...await getPlayerSize() };
+
+    preferences = {
+      ...preferences,
+      ...await getPlayerSize()
+    };
     resizePlayerIfNeeded();
   });
   storage.watch<VideoAutoResize>("sync:autoResize", async isResizeVideo => {
@@ -87,6 +97,7 @@ function addStorageListener() {
     if (!isEnabled || !isWatchPage) {
       return;
     }
+
     preferences.isResizeVideo = isResizeVideo ?? false;
     preferences.viewMode = await storage.getItem<VideoSize>("sync:size", { fallback: initial.size });
     resizePlayerIfNeeded();
@@ -97,6 +108,7 @@ function addStorageListener() {
     if (!isEnabled || !isWatchPage) {
       return;
     }
+
     preferences.viewMode = size ?? initial.size;
     preferences.isResizeVideo = await storage.getItem<VideoAutoResize>("sync:autoResize", {
       fallback: initial.isResizeVideo
@@ -112,6 +124,7 @@ function addStorageListener() {
     if (!isEnabled || !isWatchPage) {
       return;
     }
+
     preferences.isExcludeVertical = isExcludeVertical ?? false;
     preferences.viewMode = await storage.getItem<VideoSize>("sync:size", { fallback: initial.size });
     resizePlayerIfNeeded();
@@ -120,7 +133,7 @@ function addStorageListener() {
 
 async function initPlayerResize() {
   addStorageListener();
-  addGlobalEventListener(addTemporaryBodyListenerOnDesktop);
+  void addGlobalEventListener(addTemporaryBodyListenerOnDesktop);
 
   if (!await getIsExtensionEnabled()) {
     return;
@@ -137,6 +150,7 @@ async function initPlayerResize() {
       if (!elVideo) {
         return;
       }
+
       observer.disconnect();
       setupVideoResizeListener(elVideo);
     }).observe(document, OBSERVER_OPTIONS);

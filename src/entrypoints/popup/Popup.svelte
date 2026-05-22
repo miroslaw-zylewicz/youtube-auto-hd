@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Section from "@/entrypoints/popup/components/Section.svelte";
   import {
     isEnableYouTubeMusic,
     isEnhancedBitrates,
@@ -12,15 +13,14 @@
     qualitiesStored,
     sizeVideo
   } from "@/entrypoints/popup/states.svelte";
-  import Section from "@/entrypoints/popup/components/Section.svelte";
   import ControlEnabled from "@/entrypoints/popup/views/ControlEnabled.svelte";
   import ControlQuality from "@/entrypoints/popup/views/ControlQuality.svelte";
   import ControlSize from "@/entrypoints/popup/views/ControlSize.svelte";
   import ControlYouTubeMusic from "@/entrypoints/popup/views/ControlYouTubeMusic.svelte";
   import Promotions from "@/entrypoints/popup/views/Promotions.svelte";
   import type { EnhancedBitratePreferences, QualityFpsPreferences, VideoAutoResize, VideoSize } from "@/lib/ythd-types";
-  import { untrack } from "svelte";
   import { getI18n } from "@/lib/ythd-utils";
+  import { untrack } from "svelte";
 
   interface Props {
     qualities: QualityFpsPreferences;

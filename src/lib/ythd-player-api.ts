@@ -1,6 +1,12 @@
 import { qualities } from "./ythd-defaults";
 import type { QualityFpsPreferences, VideoQuality, YTMusicQuality } from "./ythd-types";
-import { extractFpsFromLabel, getFpsFromRange, getPlayerDiv, getVisibleElement, SELECTORS } from "./ythd-utils";
+import {
+  extractFpsFromLabel,
+  getFpsFromRange,
+  getPlayerDiv,
+  getVisibleElement,
+  SELECTORS
+} from "./ythd-utils";
 
 type QualityData = {
   qualityLabel: string;
@@ -31,6 +37,7 @@ export const QUALITY_NUMBER = Object.fromEntries<VideoQuality>(
     if (videoQuality === undefined) {
       throw new Error(`[YTHD] Invalid quality value in QUALITY_MAP: ${number}`);
     }
+
     return [label, videoQuality];
   })
 );
@@ -52,12 +59,9 @@ export function changeQualityViaPlayerAPI(qualityPreferences: QualityFpsPreferen
 
   const fpsStep = getFpsFromRange(qualityPreferences, fpsVideo);
   const preferredQuality = QUALITY_MAP[qualityPreferences[fpsStep]];
-  const bestQuality = qualityData.find(
-    data => QUALITY_NUMBER[data.quality] <= QUALITY_NUMBER[preferredQuality]
-  );
-
-  if (!bestQuality) {
+  const bestQuality = qualityData.find(data => QUALITY_NUMBER[data.quality] <= QUALITY_NUMBER[preferredQuality]);  if (!bestQuality) {
     return;
   }
+
   elPlayer.setPlaybackQualityRange(bestQuality.quality, bestQuality.quality);
 }

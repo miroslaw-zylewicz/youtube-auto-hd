@@ -47,6 +47,7 @@ function sendQualityIfEnabled() {
   if (!lastIsExtensionEnabled || !lastIsYouTubeMusicEnabled) {
     return;
   }
+
   void sendQualityToMainWorld();
 }
 

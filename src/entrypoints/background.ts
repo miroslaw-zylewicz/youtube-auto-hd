@@ -6,12 +6,11 @@ function iconActions() {
   storage.watch<boolean>("local:isExtensionEnabled", isEnabled =>
     browser.action.setIcon({
       path: isEnabled ?? false ? pathIconOn : pathIconOff
-    })
-  );
+    }));
 }
 
 export default defineBackground(() => {
-  browser.runtime.setUninstallURL("");
+  void browser.runtime.setUninstallURL("");
   browser.runtime.onInstalled.addListener(() => {
     iconActions();
   });

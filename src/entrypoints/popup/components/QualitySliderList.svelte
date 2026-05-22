@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
   import Slider from "./Slider.svelte";
-  import type { VideoQuality } from "@/lib/ythd-types";
   import { fpsList, qualities } from "@/lib/ythd-defaults";
+  import type { VideoQuality } from "@/lib/ythd-types";
   import { getI18n } from "@/lib/ythd-utils";
+  import type { Snippet } from "svelte";
 
   interface Props {
     qualitiesRecord: Record<string, VideoQuality>;
@@ -19,7 +19,7 @@
 
   const qualitiesReversed = [...qualities].reverse();
 
-  function fpsToRange(index: number) {
+  function fpsToRange(index: number): string {
     const fpsRangeStart = fpsList[index - 1] + 1;
     return `${fpsRangeStart}-${fpsList[index]}`;
   }

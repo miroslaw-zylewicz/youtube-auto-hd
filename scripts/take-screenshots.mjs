@@ -15,11 +15,22 @@ async function cdpEval(wsUrl, expression) {
     const ws = new WebSocket(wsUrl);
     ws.addEventListener("error", reject);
     ws.addEventListener("open", () =>
-      ws.send(JSON.stringify({ id: 1, method: "Runtime.evaluate", params: { expression, returnByValue: true, awaitPromise: true } }))
-    );
+      ws.send(
+        JSON.stringify({
+          id: 1,
+          method: "Runtime.evaluate",
+          params: {
+            expression,
+            returnByValue: true,
+            awaitPromise: true
+          }
+        })
+      ));
     ws.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
-      if (message.id === 1) { ws.close(); resolve(message.result?.result?.value); }
+      if (message.id === 1) {
+        ws.close(); resolve(message.result?.result?.value);
+      }
     });
   });
 }
@@ -29,14 +40,27 @@ async function cdpScreenshot(wsUrl, clipY) {
     const ws = new WebSocket(wsUrl);
     ws.addEventListener("error", reject);
     ws.addEventListener("open", () =>
-      ws.send(JSON.stringify({ id: 1, method: "Page.captureScreenshot", params: {
-        format: "png",
-        clip: { x: 0, y: clipY, width: 1280, height: 800, scale: 1 }
-      }}))
-    );
+      ws.send(
+        JSON.stringify({
+          id: 1,
+          method: "Page.captureScreenshot",
+          params: {
+            format: "png",
+            clip: {
+              x: 0,
+              y: clipY,
+              width: 1280,
+              height: 800,
+              scale: 1
+            }
+          }
+        })
+      ));
     ws.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
-      if (message.id === 1) { ws.close(); resolve(message.result?.data); }
+      if (message.id === 1) {
+        ws.close(); resolve(message.result?.data);
+      }
     });
   });
 }
@@ -46,13 +70,23 @@ async function cdpSetViewport(wsUrl) {
     const ws = new WebSocket(wsUrl);
     ws.addEventListener("error", reject);
     ws.addEventListener("open", () =>
-      ws.send(JSON.stringify({ id: 1, method: "Emulation.setDeviceMetricsOverride", params: {
-        width: 1280, height: 800, deviceScaleFactor: 1, mobile: false
-      }}))
-    );
+      ws.send(
+        JSON.stringify({
+          id: 1,
+          method: "Emulation.setDeviceMetricsOverride",
+          params: {
+            width: 1280,
+            height: 800,
+            deviceScaleFactor: 1,
+            mobile: false
+          }
+        })
+      ));
     ws.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
-      if (message.id === 1) { ws.close(); resolve(); }
+      if (message.id === 1) {
+        ws.close(); resolve();
+      }
     });
   });
 }
@@ -62,7 +96,10 @@ async function waitForPopup(timeout = 10000) {
   while (Date.now() - start < timeout) {
     const pages = await getPages();
     const popup = pages.find(page => page.url === POPUP_URL && page.type === "page");
-    if (popup) return popup;
+    if (popup) {
+      return popup;
+    }
+
     await new Promise(resolve => setTimeout(resolve, 300));
   }
   throw new Error("Popup page not found");
@@ -79,10 +116,19 @@ await new Promise((resolve, reject) => {
   const ws = new WebSocket(youtubePage.webSocketDebuggerUrl);
   ws.addEventListener("error", reject);
   ws.addEventListener("open", () =>
-    ws.send(JSON.stringify({ id: 1, method: "Page.navigate", params: { url: POPUP_URL } }))
-  );
+    ws.send(
+      JSON.stringify({
+        id: 1,
+        method: "Page.navigate",
+        params: {
+          url: POPUP_URL
+        }
+      })
+    ));
   ws.addEventListener("message", ({ data }) => {
-    if (JSON.parse(data).id === 1) { ws.close(); resolve(); }
+    if (JSON.parse(data).id === 1) {
+      ws.close(); resolve();
+    }
   });
 });
 
@@ -95,7 +141,8 @@ console.log("Popup ready");
 await cdpSetViewport(wsUrl);
 
 // Enable all switches then turn off the first, center UI, return scroll height
-const scrollHeight = await cdpEval(wsUrl, `(async () => {
+const scrollHeight = await cdpEval(
+  wsUrl, `(async () => {
   const toggles = [...document.querySelectorAll("input[type=checkbox]")];
   toggles.filter(t => !t.checked).forEach(t => t.click());
   if (toggles[1]?.checked) toggles[1].click();
@@ -103,7 +150,8 @@ const scrollHeight = await cdpEval(wsUrl, `(async () => {
   document.body.style.cssText = "margin:0;";
   await new Promise(r => setTimeout(r, 500));
   return document.body.scrollHeight;
-})()`);
+})()`
+);
 
 console.log("scrollHeight:", scrollHeight, "toggles setup done");
 

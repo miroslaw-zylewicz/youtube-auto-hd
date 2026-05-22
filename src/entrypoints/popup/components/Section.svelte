@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  const { label, children }: { label: string; children: Snippet } = $props();
+  const { label, children }: {
+    label: string;
+    children: Snippet;
+  } = $props();
   const headingId = crypto.randomUUID();
 </script>
 

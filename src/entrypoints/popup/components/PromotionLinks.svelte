@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { mdiGithub, mdiHeartOutline, mdiStarOutline, mdiTranslate } from "@mdi/js";
-
-  import { browser, storage } from "#imports";
   import Icon from "@/entrypoints/popup/components/Icon.svelte";
   import { isHideDonationSection } from "@/entrypoints/popup/states.svelte";
   import { getI18n } from "@/lib/ythd-utils";
+  import { mdiGithub, mdiHeartOutline, mdiStarOutline, mdiTranslate } from "@mdi/js";
+  import { browser, storage } from "#imports";
 
   const i18n: Record<string, string> = {
     labelRate: getI18n("cj_i18n_06861", "Rate extension"),
@@ -43,7 +42,11 @@
     return "chrome";
   })();
 
-  type PromotionalLink = { label: string; url: string; icon: string };
+  type PromotionalLink = {
+    label: string;
+    url: string;
+    icon: string;
+  };
   const links: Array<PromotionalLink> = [
     {
       label: i18n.contact,
@@ -69,7 +72,7 @@
 
   $effect(() => {
     if (isHideDonationSection.value) {
-      storage.setItem("sync:isHideDonationSection", isHideDonationSection.value);
+      void storage.setItem("sync:isHideDonationSection", isHideDonationSection.value);
     }
   });
 </script>
@@ -86,6 +89,7 @@
           if (url.includes("paypal.me")) {
             isHideDonationSection.value = true;
           }
+
           await browser.tabs.create({ url });
           close();
         }}>

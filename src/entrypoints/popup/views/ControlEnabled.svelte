@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { storage } from "#imports";
   import Switch from "@/entrypoints/popup/components/Switch.svelte";
   import { isExtensionEnabled } from "@/entrypoints/popup/states.svelte";
   import { getI18n } from "@/lib/ythd-utils";
+  import { storage } from "#imports";
 
   const i18n = {
     labelEnabled: getI18n("cj_i18n_07266", "Extension is on")
   };
 
   $effect(() => {
-    storage.setItem("local:isExtensionEnabled", isExtensionEnabled.value);
+    void storage.setItem("local:isExtensionEnabled", isExtensionEnabled.value);
   });
 </script>
 

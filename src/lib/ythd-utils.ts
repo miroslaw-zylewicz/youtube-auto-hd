@@ -2,7 +2,10 @@ import { fpsSupported, initial } from "./ythd-defaults";
 import type { EnhancedBitrateFpsPreferences, QualityFpsPreferences } from "./ythd-types";
 import { storage, type StorageArea } from "#imports";
 
-export const OBSERVER_OPTIONS = Object.freeze<MutationObserverInit>({ childList: true, subtree: true });
+export const OBSERVER_OPTIONS = Object.freeze<MutationObserverInit>({
+  childList: true,
+  subtree: true
+});
 window.ythdLastUserQualities = { ...initial.qualities };
 window.ythdLastUserEnhancedBitrates = { ...initial.isEnhancedBitrates };
 window.ythdIsUseSuperResolution = initial.isUseSuperResolution;
@@ -101,22 +104,25 @@ export function getFpsFromRange(
   return fpsList.find(fps => fps <= fpsToCheck) ?? fpsList[fpsList.length - 1] ?? fpsSupported[2];
 }
 
-const getCircularReplacer = () => {
+function getCircularReplacer() {
   const seen = new WeakSet();
   return (_: unknown, value: unknown) => {
     if (typeof value === "object" && value !== null) {
       if (seen.has(value)) {
         return;
       }
+
       seen.add(value);
     }
+
     return value;
   };
-};
+}
 
 export function getUncircularJson(obj: Record<string, unknown> | null) {
   if (!obj) {
     return obj;
   }
+
   return JSON.parse(JSON.stringify(obj, getCircularReplacer()));
 }

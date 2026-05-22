@@ -32,9 +32,18 @@ const [
 ]);
 
 // Merge with initial to ensure all FPS keys exist (handles storage from older versions)
-const qualities = { ...initial.qualities, ...qualitiesRaw };
-const enhancedBitrates = { ...initial.isEnhancedBitrates, ...enhancedBitratesRaw };
-const qualitiesMusic = { ...initial.qualities, ...qualitiesMusicRaw };
+const qualities = {
+  ...initial.qualities,
+  ...qualitiesRaw
+};
+const enhancedBitrates = {
+  ...initial.isEnhancedBitrates,
+  ...enhancedBitratesRaw
+};
+const qualitiesMusic = {
+  ...initial.qualities,
+  ...qualitiesMusicRaw
+};
 
 export default mount(Popup, {
   target: document.getElementById("app") ?? document.body,

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
   import "ccc-components/styles/switch.css";
+  import type { Snippet } from "svelte";
 
   interface Props {
     checked: boolean | null | undefined;
@@ -13,18 +13,17 @@
 
   const random = crypto.randomUUID();
 
-
   let { checked = $bindable(false), children, className, change, ...rest }: Props = $props();
 </script>
 
 <article class="ccc-switch {className}" dir="auto" {...rest}>
   <input
-    bind:checked
-    class="ccc-switch__input"
     id="switch-{random}"
+    class="ccc-switch__input"
     onchange={e => change?.(e.currentTarget.checked)}
     role="switch"
-    type="checkbox" />
+    type="checkbox"
+    bind:checked />
   <label class="ccc-switch__switch" for="switch-{random}"></label>
   <label class="ccc-switch__label" for="switch-{random}"> {@render children?.()}</label>
 </article>

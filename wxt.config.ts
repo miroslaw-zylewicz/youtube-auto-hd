@@ -10,7 +10,7 @@ const [, author, email] = packageJson.author.match(/(.+) <(.+)>/)!;
 export default defineConfig({
   srcDir: "src",
   publicDir: "src/public",
-  manifest: ({ browser, mode })=> ({
+  manifest: ({ browser, mode: _mode })=> ({
     name: "YouTube Auto HD + FPS",
     description: "__MSG_cj_i18n_02146__",
     homepage_url: url,

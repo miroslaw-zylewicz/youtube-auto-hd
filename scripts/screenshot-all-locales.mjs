@@ -1,5 +1,5 @@
-import { writeFileSync, readFileSync, mkdirSync } from "fs";
 import { execSync, spawn } from "child_process";
+import { writeFileSync, readFileSync, mkdirSync } from "fs";
 
 const CDP_HOST = "http://localhost:9226";
 const EXT_ID = "ppocahclaifdmabkmkehmennokbkhcpo";
@@ -17,11 +17,22 @@ async function cdpEval(wsUrl, expression) {
     const ws = new WebSocket(wsUrl);
     ws.addEventListener("error", reject);
     ws.addEventListener("open", () =>
-      ws.send(JSON.stringify({ id: 1, method: "Runtime.evaluate", params: { expression, returnByValue: true, awaitPromise: true } }))
-    );
+      ws.send(
+        JSON.stringify({
+          id: 1,
+          method: "Runtime.evaluate",
+          params: {
+            expression,
+            returnByValue: true,
+            awaitPromise: true
+          }
+        })
+      ));
     ws.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
-      if (message.id === 1) { ws.close(); resolve(message.result?.result?.value); }
+      if (message.id === 1) {
+        ws.close(); resolve(message.result?.result?.value);
+      }
     });
   });
 }
@@ -31,14 +42,27 @@ async function cdpScreenshot(wsUrl, clipY) {
     const ws = new WebSocket(wsUrl);
     ws.addEventListener("error", reject);
     ws.addEventListener("open", () =>
-      ws.send(JSON.stringify({ id: 1, method: "Page.captureScreenshot", params: {
-        format: "png",
-        clip: { x: 0, y: clipY, width: 1280, height: 800, scale: 1 }
-      }}))
-    );
+      ws.send(
+        JSON.stringify({
+          id: 1,
+          method: "Page.captureScreenshot",
+          params: {
+            format: "png",
+            clip: {
+              x: 0,
+              y: clipY,
+              width: 1280,
+              height: 800,
+              scale: 1
+            }
+          }
+        })
+      ));
     ws.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
-      if (message.id === 1) { ws.close(); resolve(message.result?.data); }
+      if (message.id === 1) {
+        ws.close(); resolve(message.result?.data);
+      }
     });
   });
 }
@@ -47,10 +71,18 @@ async function cdpCommand(wsUrl, method, params = {}) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(wsUrl);
     ws.addEventListener("error", reject);
-    ws.addEventListener("open", () => ws.send(JSON.stringify({ id: 1, method, params })));
+    ws.addEventListener("open", () => ws.send(
+      JSON.stringify({
+        id: 1,
+        method,
+        params
+      })
+    ));
     ws.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
-      if (message.id === 1) { ws.close(); resolve(message.result); }
+      if (message.id === 1) {
+        ws.close(); resolve(message.result);
+      }
     });
   });
 }
@@ -60,7 +92,9 @@ async function waitForChrome(timeout = 30000) {
   while (Date.now() - start < timeout) {
     try {
       const response = await fetch(`${CDP_HOST}/json/version`);
-      if (response.ok) return;
+      if (response.ok) {
+        return;
+      }
     } catch { /* not ready yet */ }
     await new Promise(resolve => setTimeout(resolve, 500));
   }
@@ -72,7 +106,10 @@ async function waitForPopup(timeout = 15000) {
   while (Date.now() - start < timeout) {
     const pages = await getPages();
     const popup = pages.find(page => page.url === POPUP_URL && page.type === "page");
-    if (popup) return popup;
+    if (popup) {
+      return popup;
+    }
+
     await new Promise(resolve => setTimeout(resolve, 300));
   }
   throw new Error("Popup page not found");
@@ -118,7 +155,9 @@ async function takeScreenshotsForLocale(locale) {
     // Navigate the YouTube tab to the popup
     const pages = await getPages();
     const youtubePage = pages.find(page => page.url.includes("youtube.com") || page.url.includes("about:blank"));
-    if (!youtubePage) throw new Error("No page available to navigate");
+    if (!youtubePage) {
+      throw new Error("No page available to navigate");
+    }
 
     await cdpCommand(youtubePage.webSocketDebuggerUrl, "Page.navigate", { url: POPUP_URL });
     console.log("Navigated to popup");
@@ -130,10 +169,14 @@ async function takeScreenshotsForLocale(locale) {
 
     // Use a tall viewport so all content renders without overflow constraints
     await cdpCommand(wsUrl, "Emulation.setDeviceMetricsOverride", {
-      width: 1280, height: 3000, deviceScaleFactor: 1, mobile: false
+      width: 1280,
+      height: 3000,
+      deviceScaleFactor: 1,
+      mobile: false
     });
 
-    const scrollHeight = await cdpEval(wsUrl, `(async () => {
+    const scrollHeight = await cdpEval(
+      wsUrl, `(async () => {
       // Poll until Svelte mounts
       for (let i = 0; i < 40; i++) {
         if (document.querySelectorAll("input[type=checkbox]").length >= 4) break;
@@ -192,7 +235,8 @@ async function takeScreenshotsForLocale(locale) {
       await new Promise(r => setTimeout(r, 500));
 
       return Math.ceil(document.body.getBoundingClientRect().bottom);
-    })()`);
+    })()`
+    );
 
     console.log("scrollHeight:", scrollHeight);
 

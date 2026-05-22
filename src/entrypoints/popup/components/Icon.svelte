@@ -8,7 +8,7 @@
   const SIZE = 24;
 </script>
 
-<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="{SIZE}px" height="{SIZE}px">
+<svg aria-hidden="true" focusable="false" height="{SIZE}px" width="{SIZE}px" xmlns="http://www.w3.org/2000/svg">
   <path d={path} />
 </svg>
 

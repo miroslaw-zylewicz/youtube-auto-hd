@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { browser, storage } from "#imports";
   import Switch from "@/entrypoints/popup/components/Switch.svelte";
   import { isExcludeVertical, isResizeVideo, sizeVideo } from "@/entrypoints/popup/states.svelte";
-  import { getI18n } from "@/lib/ythd-utils";
   import type { VideoSize } from "@/lib/ythd-types";
+  import { getI18n } from "@/lib/ythd-utils";
+  import { browser, storage } from "#imports";
 
   const i18n = {
     labelIsResizeVideo: getI18n("cj_i18n_06568", "Auto-resize videos"),
@@ -15,20 +15,30 @@
 
   const groupId = crypto.randomUUID();
 
-  const sizeOptions: Array<{ value: VideoSize; label: string }> = [
-    { value: 0, label: i18n.labelSizeSmall },
-    { value: 1, label: i18n.labelSizeLarge }
+  const sizeOptions: Array<{
+    value: VideoSize;
+    label: string;
+  }> = [
+    {
+      value: 0,
+      label: i18n.labelSizeSmall
+    },
+    {
+      value: 1,
+      label: i18n.labelSizeLarge
+    }
   ];
 
   $effect(() => {
-    storage.setItem("sync:autoResize", isResizeVideo.value);
+    void storage.setItem("sync:autoResize", isResizeVideo.value);
   });
 
   $effect(() => {
     if (!isResizeVideo.value || !isExcludeVertical.value || sizeVideo.value === null) {
       return;
     }
-    browser.cookies.set({
+
+    void browser.cookies.set({
       url: "https://youtube.com/",
       name: "wide",
       value: sizeVideo.value.toString()
@@ -36,11 +46,11 @@
   });
 
   $effect(() => {
-    storage.setItem("sync:size", sizeVideo.value);
+    void storage.setItem("sync:size", sizeVideo.value);
   });
 
   $effect(() => {
-    storage.setItem("sync:isExcludeVertical", isExcludeVertical.value);
+    void storage.setItem("sync:isExcludeVertical", isExcludeVertical.value);
   });
 </script>
 
@@ -52,12 +62,12 @@
       <legend>{i18n.labelVideoSize}</legend>
       <div class="inner">
         {#each sizeOptions as option (option.value)}
-          <label class="box" data-size={option.value === 0 ? "small" : "large"} class:selected={sizeVideo.value === option.value}>
+          <label class="box" class:selected={sizeVideo.value === option.value} data-size={option.value === 0 ? "small" : "large"}>
             <input
-              type="radio"
               name="video-size-{groupId}"
-              bind:group={sizeVideo.value}
-              value={option.value} />
+              type="radio"
+              value={option.value}
+              bind:group={sizeVideo.value} />
             <span class="visually-hidden">{option.label}</span>
             <div class="rectangle"></div>
           </label>

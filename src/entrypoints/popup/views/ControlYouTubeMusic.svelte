@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { storage } from "#imports";
   import QualitySliderList from "../components/QualitySliderList.svelte";
   import Switch from "../components/Switch.svelte";
   import {
@@ -10,6 +9,7 @@
   } from "@/entrypoints/popup/states.svelte";
   import { fpsList } from "@/lib/ythd-defaults";
   import { getI18n, getUncircularJson } from "@/lib/ythd-utils";
+  import { storage } from "#imports";
 
   const i18n = {
     labelEnableYouTubeMusic: getI18n("cj_i18n_08029", "Apply on YouTube Music"),
@@ -20,6 +20,7 @@
     if (!isUseGlobalQualityPreferences.value || !qualitiesStored.value || !qualitiesMusicStored.value) {
       return;
     }
+
     for (const fps of fpsList) {
       qualitiesMusicStored.value[fps] = qualitiesStored.value[fps];
     }
@@ -29,15 +30,17 @@
     if (qualitiesMusicStored.value === null) {
       return;
     }
-    storage.setItem("local:qualitiesMusic", getUncircularJson(qualitiesMusicStored.value));
+
+    void storage.setItem("local:qualitiesMusic", getUncircularJson(qualitiesMusicStored.value));
   });
 
   let isEnableInitialized = false;
   $effect(() => {
     const value = isEnableYouTubeMusic.value;
     if (isEnableInitialized && value !== null) {
-      storage.setItem("local:isEnableYouTubeMusic", value);
+      void storage.setItem("local:isEnableYouTubeMusic", value);
     }
+
     isEnableInitialized = true;
   });
 
@@ -45,8 +48,9 @@
   $effect(() => {
     const value = isUseGlobalQualityPreferences.value;
     if (isSameQualityInitialized && value !== null) {
-      storage.setItem("local:isUseGlobalQualityPreferences", value);
+      void storage.setItem("local:isUseGlobalQualityPreferences", value);
     }
+
     isSameQualityInitialized = true;
   });
 </script>
@@ -57,7 +61,7 @@
   </Switch>
 
   {#if isEnableYouTubeMusic.value}
-    <Switch bind:checked={isUseGlobalQualityPreferences.value} className="switch">
+    <Switch className="switch" bind:checked={isUseGlobalQualityPreferences.value}>
       {i18n.labelSameQuality}
     </Switch>
 

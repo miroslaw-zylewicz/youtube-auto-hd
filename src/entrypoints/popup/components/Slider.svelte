@@ -1,16 +1,15 @@
 <script lang="ts">
+  import type { VideoQuality } from "@/lib/ythd-types";
   import noUiSlider, { type API } from "nouislider";
+  import "nouislider/dist/nouislider.css";
   import type { Snippet } from "svelte";
   import { onMount } from "svelte";
-  import "nouislider/dist/nouislider.css";
-  import type { VideoQuality } from "@/lib/ythd-types";
 
   interface Props {
     values?: Array<VideoQuality>;
     value: VideoQuality;
     children?: Snippet;
   }
-
 
   let { values = [], value = $bindable(), children }: Props = $props();
 
@@ -35,14 +34,14 @@
       direction: document.querySelector("[dir='rtl']") ? "rtl" : "ltr"
     });
     elSlider!.querySelector(".noUi-handle")?.setAttribute("aria-labelledby", labelId);
-    slider.on("update", (_, __, unencoded) => {
+    slider.on("update", (_, _handle, unencoded) => {
       value = values[Math.round(unencoded[0])];
     });
   });
 </script>
 
 <div class="slider">
-  <div class="label" id={labelId}>
+  <div id={labelId} class="label">
     {@render children?.()}
   </div>
   <div bind:this={elSlider} class="slider-element"></div>
