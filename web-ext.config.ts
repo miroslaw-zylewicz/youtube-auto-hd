@@ -10,6 +10,7 @@ import { homedir } from "node:os";
 import {
   join,
   basename,
+  dirname,
   resolve,
   extname
 } from "node:path";
@@ -59,12 +60,14 @@ function detectBrowser(): Browser {
   if (isBrowser(BROWSER)) {
     return BROWSER;
   }
+
   const args = process.argv;
   const browserFlagIndex = args.findIndex(arg => arg === "-b" || arg === "--browser");
   const flagValue = args[browserFlagIndex + 1];
   if (browserFlagIndex > -1 && isBrowser(flagValue)) {
     return flagValue;
   }
+
   return "chrome";
 }
 
@@ -72,9 +75,11 @@ function detectMode(): Mode {
   if (isMode(MODE)) {
     return MODE;
   }
+
   if (BLANK) {
     return "blank";
   }
+
   return "youtube";
 }
 
@@ -141,6 +146,7 @@ function copyChromiumProfile(browserName: ChromiumBrowser, name: string) {
     console.warn(`Source profile not found: ${sourceProfile}`);
     return destUserData;
   }
+
   cpSync(sourceProfile, destProfile, {
     recursive: true,
     filter: src => !LOCK_FILES.has(basename(src))
@@ -150,24 +156,75 @@ function copyChromiumProfile(browserName: ChromiumBrowser, name: string) {
   return destUserData;
 }
 
+function findDefaultFirefoxProfileName(): string | undefined {
+  const source = firefoxProfilesRoot[osPlatform];
+  if (!source) {
+    return undefined;
+  }
+
+  const profilesIniPath = join(dirname(source), "profiles.ini");
+  if (!existsSync(profilesIniPath)) {
+    return undefined;
+  }
+
+  const sections: Record<string, Record<string, string>> = {};
+  let currentSection = "";
+  for (const line of readFileSync(profilesIniPath, "utf-8").split(/\r?\n/)) {
+    const sectionMatch = line.match(/^\[(.+)\]$/);
+    if (sectionMatch) {
+      currentSection = sectionMatch[1];
+      sections[currentSection] ??= {};
+      continue;
+    }
+
+    const keyValueMatch = line.match(/^(.+?)=(.*)$/);
+    if (keyValueMatch && currentSection) {
+      sections[currentSection][keyValueMatch[1]] = keyValueMatch[2];
+    }
+  }
+  for (const [sectionName, values] of Object.entries(sections)) {
+    if (sectionName.startsWith("Install") && values.Default) {
+      return basename(values.Default);
+    }
+  }
+  for (const [sectionName, values] of Object.entries(sections)) {
+    if (sectionName.startsWith("Profile") && values.Default === "1" && values.Path) {
+      return basename(values.Path);
+    }
+  }
+  return undefined;
+}
+
 function copyFirefoxProfile(name: string) {
   const source = firefoxProfilesRoot[osPlatform];
   if (!source || !existsSync(source)) {
     return undefined;
   }
 
-  const directoryName = readdirSync(source).find(dir => dir === name || dir.endsWith(`.${name}`));
+  let directoryName = readdirSync(source).find(dir => dir === name || dir.endsWith(`.${name}`));
+  let resolvedName = name;
   if (!directoryName) {
-    return undefined;
+    const defaultName = findDefaultFirefoxProfileName();
+    if (!defaultName) {
+      return undefined;
+    }
+
+    directoryName = readdirSync(source).find(dir => dir === defaultName || dir.endsWith(`.${defaultName}`));
+
+    if (!directoryName) {
+      return undefined;
+    }
+
+    resolvedName = defaultName;
   }
 
   const destFirefoxRoot = resolve(projectRoot, "user-data", "firefox");
-  const dest = join(destFirefoxRoot, name);
+  const dest = join(destFirefoxRoot, resolvedName);
   if (existsSync(dest)) {
     return dest;
   }
 
-  console.log(`Copying Firefox profile "${name}" from ${join(source, directoryName)} to ${dest}...`);
+  console.log(`Copying Firefox profile "${resolvedName}" from ${join(source, directoryName)} to ${dest}...`);
   mkdirSync(destFirefoxRoot, { recursive: true });
   cpSync(join(source, directoryName), dest, {
     recursive: true,
@@ -183,12 +240,15 @@ function buildEmbedSource() {
   if (AUTOPLAY === "1") {
     params.push("autoplay=1");
   }
+
   if (CONTROLS === "0") {
     params.push("controls=0");
   }
+
   if (AMP_CONTROLS === "1") {
     params.push("amp;controls=0");
   }
+
   const query = params.length > 0 ? `?${params.join("&")}` : "";
   return `https://www.youtube.com/embed/aiSla-5xq3w${query}`;
 }
@@ -215,6 +275,7 @@ function startIframeServer() {
       response.end(html);
       return;
     }
+
     const filePath = join(testsDir, requestPath);
     try {
       const content = readFileSync(filePath);
@@ -234,9 +295,11 @@ function resolveStartUrl() {
   if (mode === "blank") {
     return "about:blank";
   }
+
   if (mode === "iframe") {
     return startIframeServer();
   }
+
   return "https://www.youtube.com/watch?v=aiSla-5xq3w";
 }
 
