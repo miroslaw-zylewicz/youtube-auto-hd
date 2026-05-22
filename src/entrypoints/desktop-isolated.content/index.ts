@@ -1,9 +1,8 @@
-import { storage } from "#imports";
-import type { EnhancedBitratePreferences, QualityFpsPreferences } from "@/lib/ythd-types";
 import { getVideoFPS, prepareToChangeQualityOnDesktop } from "@/entrypoints/desktop-isolated.content/functions-desktop";
 import { initial, qualities } from "@/lib/ythd-defaults";
 import { PlayerMessage, shortsMessenger } from "@/lib/ythd-player-messaging";
-import { addStorageListeners } from "@/lib/ythd-storage-bridge";
+import { addStorageListeners, initializeEnhancedBitrateRejections } from "@/lib/ythd-storage-bridge";
+import type { EnhancedBitratePreferences, QualityFpsPreferences } from "@/lib/ythd-types";
 import {
   addGlobalEventListener,
   getIsExtensionEnabled,
@@ -13,7 +12,7 @@ import {
   OBSERVER_OPTIONS,
   SELECTORS
 } from "@/lib/ythd-utils";
-
+import { storage } from "#imports";
 
 declare global {
   interface Window {
@@ -46,13 +45,16 @@ function getQualityParentElement(elTarget: HTMLElement) {
   if (elTarget.matches(SELECTORS.labelPremium) || elTarget.tagName === "SUP") {
     return elTarget.parentElement ?? elTarget;
   }
+
   if (elTarget.tagName === "SPAN") {
     return elTarget;
   }
+
   const elQualityOptionV3 = elTarget.closest<HTMLElement>(SELECTORS.qualityOption);
   if (elQualityOptionV3) {
     return elQualityOptionV3;
   }
+
   return elTarget.querySelector<HTMLElement>("span, div > span");
 }
 
@@ -83,6 +85,7 @@ function saveManualQualityChangeOnDesktop({ isTrusted, target }: Event) {
     window.ythdLastQualityClicked ??= {};
     window.ythdLastQualityClicked[fps] = qualityClicked;
   }
+
   window.ythdLastEnhancedBitrateClicked ??= {};
   window.ythdLastEnhancedBitrateClicked[fps] = Boolean(elQuality.querySelector(SELECTORS.labelPremium));
 }
@@ -90,6 +93,7 @@ function saveManualQualityChangeOnDesktop({ isTrusted, target }: Event) {
 function handleShortsNavigation(elVideo: HTMLVideoElement) {
   elVideo.removeEventListener("canplay", prepareToChangeQualityOnDesktop);
   elVideo.removeEventListener("canplay", sendQualityToMainWorld);
+
   if (elVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
     void sendQualityToMainWorld();
   } else {
@@ -105,16 +109,19 @@ function observeForVideoOnNonWatchPage() {
       observer.disconnect();
       return;
     }
+
     const elVideo = getVisibleElement<HTMLVideoElement>(SELECTORS.video);
     if (!elVideo) {
       return;
     }
+
     observer.disconnect();
     gPendingVideoObserver = null;
     const elPlayer = getPlayerDiv(elVideo);
     if (!elPlayer) {
       return;
     }
+
     elVideo.removeEventListener("canplay", prepareToChangeQualityOnDesktop);
     elPlayer.removeEventListener("click", saveManualQualityChangeOnDesktop);
     await prepareToChangeQualityOnDesktop();
@@ -144,6 +151,7 @@ async function addTemporaryBodyListenerOnDesktop() {
     if (!elVideo) {
       return;
     }
+
     handleShortsNavigation(elVideo);
     return;
   }
@@ -200,16 +208,18 @@ async function init() {
       void sendQualityToMainWorld();
       return;
     }
+
     void prepareToChangeQualityOnDesktop();
   });
 
   window.ythdExtEnabled = await getIsExtensionEnabled(window.ythdExtEnabled);
+
   if (!window.ythdExtEnabled) {
     return;
   }
 
+  await initializeEnhancedBitrateRejections();
   void addGlobalEventListener(addTemporaryBodyListenerOnDesktop);
-
   observeForInitialVideo();
 }
 
