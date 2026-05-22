@@ -1,7 +1,7 @@
 import { getVideoFPS, prepareToChangeQualityOnDesktop } from "@/entrypoints/desktop-isolated.content/functions-desktop";
 import { initial, qualities } from "@/lib/ythd-defaults";
 import { PlayerMessage, shortsMessenger } from "@/lib/ythd-player-messaging";
-import { addStorageListeners, initializeEnhancedBitrateRejections } from "@/lib/ythd-storage-bridge";
+import { addStorageListeners } from "@/lib/ythd-storage-bridge";
 import type { EnhancedBitratePreferences, QualityFpsPreferences } from "@/lib/ythd-types";
 import {
   addGlobalEventListener,
@@ -218,7 +218,6 @@ async function init() {
     return;
   }
 
-  await initializeEnhancedBitrateRejections();
   void addGlobalEventListener(addTemporaryBodyListenerOnDesktop);
   observeForInitialVideo();
 }

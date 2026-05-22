@@ -1,5 +1,5 @@
 import { qualities } from "@/lib/ythd-defaults";
-import { loadStorageValues, saveEnhancedBitrateRejection } from "@/lib/ythd-storage-bridge";
+import { loadStorageValues } from "@/lib/ythd-storage-bridge";
 import { type EnhancedBitratePreferences, SUFFIX_EBR, SUFFIX_SUPER_RESOLUTION } from "@/lib/ythd-types";
 import {
   extractFpsFromLabel,
@@ -149,32 +149,6 @@ function changeQuality(
     }
 
     return true;
-  }
-
-  const isQualityPreferredEBR = qualitiesAvailable[0]?.toString().endsWith(SUFFIX_EBR) && isEnhancedBitrate[fpsStep];
-  if (isQualityPreferredEBR) {
-    applyQuality(0);
-    const elEbrQuality = elQualities[0];
-    const elPlayer = getPlayerDiv(elVideo);
-    if (elPlayer) {
-      new MutationObserver((_, observer) => {
-        if (elEbrQuality.ariaChecked !== "true" && elEbrQuality.isConnected) {
-          return;
-        }
-
-        observer.disconnect();
-
-        if (elEbrQuality.ariaChecked === "true") {
-          return;
-        }
-
-        window.ythdLastEnhancedBitrateClicked ??= {};
-        window.ythdLastEnhancedBitrateClicked[fpsStep] = false;
-        void saveEnhancedBitrateRejection(fpsStep);
-      }).observe(elPlayer, OBSERVER_OPTIONS);
-    }
-
-    return;
   }
 
   const iQualityPreferred = qualitiesAvailable.findIndex(quality => {
