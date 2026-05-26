@@ -1,6 +1,25 @@
 import type { EnhancedBitratePreferences, QualityFpsPreferences } from "./ythd-types";
 import { getStorage } from "./ythd-utils";
+import { fpsSupported, initial } from "./ythd-defaults";
 import { storage } from "#imports";
+
+function parseStorageValue<T>(value: T | string): T {
+  if (typeof value !== "string") {
+    return value;
+  }
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return value as unknown as T;
+  }
+}
+
+function sanitizeEnhancedBitrates(raw: EnhancedBitratePreferences | string | null): EnhancedBitratePreferences {
+  const parsed = parseStorageValue(raw);
+  return Object.fromEntries(
+    fpsSupported.map(fps => [fps, parsed?.[fps] === true])
+  ) as EnhancedBitratePreferences;
+}
 
 export async function loadStorageValues() {
   window.ythdLastUserQualities = await getStorage({
@@ -8,11 +27,12 @@ export async function loadStorageValues() {
     key: "qualities",
     fallback: window.ythdLastUserQualities
   });
-  window.ythdLastUserEnhancedBitrates = await getStorage({
+  const rawEnhancedBitrates = await getStorage<EnhancedBitratePreferences | string>({
     area: "local",
     key: "isEnhancedBitrates",
-    fallback: window.ythdLastUserEnhancedBitrates
+    fallback: window.ythdLastUserEnhancedBitrates ?? initial.isEnhancedBitrates
   });
+  window.ythdLastUserEnhancedBitrates = sanitizeEnhancedBitrates(rawEnhancedBitrates);
   window.ythdIsUseSuperResolution = await getStorage({
     area: "local",
     key: "isUseSuperResolution",
@@ -43,8 +63,8 @@ export function addStorageListeners(onApply: () => void) {
     onApply();
   });
 
-  storage.watch<EnhancedBitratePreferences>("local:isEnhancedBitrates", isEnhancedBitrates => {
-    window.ythdLastEnhancedBitrateClicked = isEnhancedBitrates ?? undefined;
+  storage.watch<EnhancedBitratePreferences | string>("local:isEnhancedBitrates", isEnhancedBitrates => {
+    window.ythdLastEnhancedBitrateClicked = sanitizeEnhancedBitrates(isEnhancedBitrates ?? null);
 
     if (!window.ythdExtEnabled) {
       return;

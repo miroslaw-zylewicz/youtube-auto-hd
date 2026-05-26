@@ -4,8 +4,8 @@
   import Switch from "../components/Switch.svelte";
   import { isEnhancedBitrates, isUseSuperResolution, qualitiesStored } from "@/entrypoints/popup/states.svelte";
   import { fpsList, qualities } from "@/lib/ythd-defaults";
-  import type { VideoQuality } from "@/lib/ythd-types";
-  import { getI18n, getUncircularJson } from "@/lib/ythd-utils";
+  import type { EnhancedBitratePreferences, QualityFpsPreferences, VideoQuality } from "@/lib/ythd-types";
+  import { getI18n } from "@/lib/ythd-utils";
   import { storage } from "#imports";
 
   const i18n = {
@@ -36,11 +36,17 @@
   });
 
   $effect(() => {
-    void storage.setItem("local:qualities", getUncircularJson(qualitiesStored.value));
+    const value = Object.fromEntries(
+      fpsList.map(fps => [fps, qualitiesStored.value?.[fps] ?? qualities[0]])
+    ) as QualityFpsPreferences;
+    void storage.setItem("local:qualities", value);
   });
 
   $effect(() => {
-    void storage.setItem("local:isEnhancedBitrates", getUncircularJson(isEnhancedBitrates.value));
+    const value = Object.fromEntries(
+      fpsList.map(fps => [fps, isEnhancedBitrates.value?.[fps] === true])
+    ) as EnhancedBitratePreferences;
+    void storage.setItem("local:isEnhancedBitrates", value);
   });
 
   $effect(() => {
